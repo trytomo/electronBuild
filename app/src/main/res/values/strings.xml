@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Stock Management</string>
+    <string name="text_pair">Pair</string>
+    <string name="text_list_devices">List Device</string>
+    <string name="text_bluetooth_off">OFF</string>
+    <string name="text_enable">Aktif</string>
+    <string name="text_view_paired">Pair</string>
+    <string name="text_scan_devices">Scan</string>
+    <string name="text_checkout">Checkout</string>
+</resources>
