@@ -36,6 +36,8 @@ public class SettingActivity extends Activity {
     private Button mScanBtn;
     private Button mCheckoutBtn;
 
+    CheckoutScanActivity mContext;
+
     private ProgressDialog mProgressDlg;
 
     private ArrayList<BluetoothDevice> mDeviceList = new ArrayList<BluetoothDevice>();
@@ -45,7 +47,6 @@ public class SettingActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_setting);
 
         mStatusTv 			= (TextView) findViewById(R.id.tv_status);

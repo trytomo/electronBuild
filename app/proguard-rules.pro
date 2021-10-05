@@ -19,3 +19,13 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-dontwarn com.imagealgorithmlab.**
+-dontwarn com.hsm.**
+-dontwarn com.rscja.deviceapi.**
+-keep class com.hsm.** {*; }
+-keep class com.rscja.deviceapi.** {*; }
+-keep interface com.rscja.ht.ui.JavascriptInterface {*;}
+-keep class * implements com.rscja.ht.ui.JavascriptInterface {*;}
+
+-keep class no.nordicsemi.android.dfu.** { *; }

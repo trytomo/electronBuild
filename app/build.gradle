@@ -27,7 +27,7 @@ android {
     }
     sourceSets {
         main {
-            jniLibs.srcDirs = ['libs']
+            jniLibs.srcDirs = ['/home/dalfiannur/workplace/stock-management/app/src/main/JniLibs']
         }
     }
     compileSdkVersion 31
