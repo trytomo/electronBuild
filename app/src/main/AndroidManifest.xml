@@ -17,7 +17,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StockManagement">
         <activity
-            android:name=".CheckoutScanActivity"
+            android:name=".screen.login.LoginActivity"
+            android:exported="true" />
+        <activity
+            android:name=".screen.checkoutscan.CheckoutScanActivity"
             android:exported="true" />
         <activity
             android:name=".SettingActivity"
