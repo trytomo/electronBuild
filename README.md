@@ -1,5 +1,6 @@
 # electronBuild
 
+Pada /app/build.gradle sesuaikan ini
 
     sourceSets {
         main {
