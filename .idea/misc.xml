@@ -6,6 +6,7 @@
         <entry key="app/src/main/res/layout/activity_checkout_scan.xml" value="0.203125" />
         <entry key="app/src/main/res/layout/activity_paired_device.xml" value="0.29030797101449274" />
         <entry key="app/src/main/res/layout/activity_setting.xml" value="0.2595108695652174" />
+        <entry key="app/src/main/res/layout/fragment_pop_up_scanner_status.xml" value="0.5" />
         <entry key="app/src/main/res/layout/list_item_device.xml" value="0.29030797101449274" />
       </map>
     </option>
