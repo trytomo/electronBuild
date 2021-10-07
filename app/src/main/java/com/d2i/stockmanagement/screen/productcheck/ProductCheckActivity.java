@@ -1,6 +1,7 @@
 package com.d2i.stockmanagement.screen.productcheck;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
@@ -44,8 +45,8 @@ public class ProductCheckActivity extends AppCompatActivity {
 
         bluetoothHelper = new BluetoothHelper(this);
 
-        initUI();
         initUHF();
+        initUI();
         initScannedProduct();
     }
 
@@ -74,10 +75,11 @@ public class ProductCheckActivity extends AppCompatActivity {
 
 
     private void initScannedProduct() {
-        ArrayList<InventoryTag> list = new ArrayList<>(scannedProducts);
-        TableAdapter tableAdapter = new TableAdapter(list);
-
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        ArrayList<InventoryTag> inventoryList = new ArrayList<>(scannedProducts);
+        TableAdapter tableAdapter = new TableAdapter(inventoryList);
         rvScannedProduct.setAdapter(tableAdapter);
+        rvScannedProduct.setLayoutManager(layoutManager);
     }
 
     class BTStatus implements ConnectionStatusCallback<Object> {
@@ -109,7 +111,9 @@ public class ProductCheckActivity extends AppCompatActivity {
                         tag.setRfid(info.getEPC());
                         tag.setProductName("ya");
                         tag.setStatus("oke");
-                        scannedProducts.add(tag);
+                        handler.post(() -> {
+                            scannedProducts.add(tag);
+                        });
                     }
                 }
             }

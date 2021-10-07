@@ -30,8 +30,6 @@ public class CheckoutScanActivity extends AppCompatActivity {
 
     boolean isRunning = false;
     boolean isScanning = false;
-    boolean isExit = false;
-    boolean loopFlag = false;
 
     TextView tvEpc;
     TextView tvStatus;
@@ -49,8 +47,7 @@ public class CheckoutScanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_checkout_scan);
 
         uhf.init(getApplicationContext());
-        uhf.setPower(1);
-        uhf.setBeep(false);
+        uhf.setBeep(true);
         checkoutScanRepository = new CheckoutScanRepository();
 
         initUI();
@@ -60,7 +57,7 @@ public class CheckoutScanActivity extends AppCompatActivity {
         uhf.connect(address, btStatus);
 
         uhf.setKeyEventCallback(keycode -> {
-            if (!isExit && uhf.getConnectStatus() == ConnectionStatus.CONNECTED) {
+            if (uhf.getConnectStatus() == ConnectionStatus.CONNECTED) {
                 isScanning = true;
                 startThread();
             }
@@ -104,26 +101,8 @@ public class CheckoutScanActivity extends AppCompatActivity {
                 uhf.stopInventory();
                 if (list.get(0) != null) {
                     handler.post(() -> tvEpc.setText(list.get(0).getEPC()));
-                    checkoutScanRepository.postUID(list.get(0).getEPC());
+//                    checkoutScanRepository.postUID(list.get(0).getEPC());
                 }
-            }
-            isScanning = false;
-        }
-    }
-
-    private void stopInventory() {
-        loopFlag = false;
-//        cancelInventoryTask();
-        boolean result = uhf.stopInventory();
-        if (isScanning) {
-            ConnectionStatus connectionStatus = uhf.getConnectStatus();
-
-            if (result || connectionStatus == ConnectionStatus.DISCONNECTED) {
-                //success
-            } else {
-                //failed
-            }
-            if (connectionStatus == ConnectionStatus.CONNECTED) {
             }
             isScanning = false;
         }

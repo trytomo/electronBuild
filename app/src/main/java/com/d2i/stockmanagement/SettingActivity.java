@@ -84,9 +84,8 @@ public class SettingActivity extends Activity {
                 if (pairedDevices == null || pairedDevices.size() == 0) {
                     showToast("No Paired Devices Found");
                 } else {
-                    ArrayList<BluetoothDevice> list = new ArrayList<BluetoothDevice>();
 
-                    list.addAll(pairedDevices);
+                    ArrayList<BluetoothDevice> list = new ArrayList<>(pairedDevices);
 
                     Intent intent = new Intent(SettingActivity.this, DeviceListActivity.class);
 

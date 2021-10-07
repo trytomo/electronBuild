@@ -19,7 +19,8 @@
         android:theme="@style/Theme.StockManagement">
         <activity
             android:name=".screen.productcheck.ProductCheckActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".screen.login.LoginActivity"
             android:exported="true" />
