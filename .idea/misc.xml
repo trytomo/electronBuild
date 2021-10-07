@@ -3,15 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/input_rounded.xml" value="0.38385416666666666" />
         <entry key="app/src/main/res/layout/activity_checkout_scan.xml" value="0.203125" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.2776268115942029" />
         <entry key="app/src/main/res/layout/activity_paired_device.xml" value="0.29030797101449274" />
         <entry key="app/src/main/res/layout/activity_setting.xml" value="0.2595108695652174" />
-        <entry key="app/src/main/res/layout/fragment_pop_up_scanner_status.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/input_text_rounded.xml" value="0.2776268115942029" />
         <entry key="app/src/main/res/layout/list_item_device.xml" value="0.29030797101449274" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

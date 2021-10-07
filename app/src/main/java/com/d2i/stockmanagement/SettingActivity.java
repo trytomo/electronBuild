@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -23,20 +22,14 @@ import android.widget.Toast;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 
-/**
- * Main activity.
- *
- * @author Lorensius W. L. T <lorenz@londatiga.net>
- *
- */
+import com.d2i.stockmanagement.screen.checkoutscan.CheckoutScanActivity;
+
 public class SettingActivity extends Activity {
     private TextView mStatusTv;
     private Button mActivateBtn;
     private Button mPairedBtn;
     private Button mScanBtn;
     private Button mCheckoutBtn;
-
-    CheckoutScanActivity mContext;
 
     private ProgressDialog mProgressDlg;
 
@@ -78,46 +71,35 @@ public class SettingActivity extends Activity {
         if (mBluetoothAdapter == null) {
             showUnsupported();
         } else {
-            mPairedBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+            mPairedBtn.setOnClickListener(v -> {
+                Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
 
-                    if (pairedDevices == null || pairedDevices.size() == 0) {
-                        showToast("No Paired Devices Found");
-                    } else {
-                        ArrayList<BluetoothDevice> list = new ArrayList<BluetoothDevice>();
+                if (pairedDevices == null || pairedDevices.size() == 0) {
+                    showToast("No Paired Devices Found");
+                } else {
+                    ArrayList<BluetoothDevice> list = new ArrayList<BluetoothDevice>();
 
-                        list.addAll(pairedDevices);
+                    list.addAll(pairedDevices);
 
-                        Intent intent = new Intent(SettingActivity.this, DeviceListActivity.class);
+                    Intent intent = new Intent(SettingActivity.this, DeviceListActivity.class);
 
-                        intent.putParcelableArrayListExtra("device.list", list);
+                    intent.putParcelableArrayListExtra("device.list", list);
 
-                        startActivity(intent);
-                    }
+                    startActivity(intent);
                 }
             });
 
-            mScanBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View arg0) {
-                    mBluetoothAdapter.startDiscovery();
-                }
-            });
+            mScanBtn.setOnClickListener(arg0 -> mBluetoothAdapter.startDiscovery());
 
-            mActivateBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mBluetoothAdapter.isEnabled()) {
-                        mBluetoothAdapter.disable();
+            mActivateBtn.setOnClickListener(v -> {
+                if (mBluetoothAdapter.isEnabled()) {
+                    mBluetoothAdapter.disable();
 
-                        showDisabled();
-                    } else {
-                        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    showDisabled();
+                } else {
+                    Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 
-                        startActivityForResult(intent, 1000);
-                    }
+                    startActivityForResult(intent, 1000);
                 }
             });
 
@@ -205,7 +187,7 @@ public class SettingActivity extends Activity {
                     showEnabled();
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-                mDeviceList = new ArrayList<BluetoothDevice>();
+                mDeviceList = new ArrayList<>();
 
                 mProgressDlg.show();
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {

@@ -7,4 +7,17 @@
     <string name="text_view_paired">Pair</string>
     <string name="text_scan_devices">Scan</string>
     <string name="text_checkout">Checkout</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="sign_in">Masuk</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Lupa Password?</string>
 </resources>

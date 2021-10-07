@@ -13,4 +13,33 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="Theme.StockManagement.Sidebar" parent="Widget.MaterialComponents.NavigationRailView">
+        <item name="backgroundColor">@color/black</item>
+    </style>
+
+    <style name="Theme.StockManagement.Label">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Theme.StockManagement.Input">
+
+    </style>
+
+    <style name="Theme.StockManagement.Input.Rounded" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="shapeAppearance">@style/Rounded</item>
+    </style>
+
+    <style name="Theme.StockManagement.Button" parent="Widget.MaterialComponents.Button">
+
+    </style>
+
+    <style name="Theme.StockManagement.Button.Rounded" parent="Widget.MaterialComponents.Button">
+        <item name="shapeAppearance">@style/Rounded</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Rounded">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">100dp</item>
+    </style>
 </resources>

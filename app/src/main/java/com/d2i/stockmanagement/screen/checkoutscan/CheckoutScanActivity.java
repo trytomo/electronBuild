@@ -1,4 +1,4 @@
-package com.d2i.stockmanagement;
+package com.d2i.stockmanagement.screen.checkoutscan;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.d2i.stockmanagement.R;
 import com.rscja.deviceapi.RFIDWithUHFBLE;
 import com.rscja.deviceapi.entity.UHFTAGInfo;
 import com.rscja.deviceapi.interfaces.ConnectionStatus;
@@ -106,9 +107,11 @@ public class CheckoutScanActivity extends AppCompatActivity {
                 if (list == null || list.size() == 0) {
                     SystemClock.sleep(1);
                 } else {
+                    ArrayList<String> epc = new ArrayList<>();
+
                     for (UHFTAGInfo info: list) {
                         uhf.setBeep(true);
-                        Log.i("EPC", info.getEPC());
+                        epc.add(info.getEPC());
                     }
                 }
             }
