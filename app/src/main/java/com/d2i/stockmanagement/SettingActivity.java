@@ -23,6 +23,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 
 import com.d2i.stockmanagement.screen.checkoutscan.CheckoutScanActivity;
+import com.d2i.stockmanagement.screen.productcheck.ProductCheckActivity;
 
 public class SettingActivity extends Activity {
     private TextView mStatusTv;
@@ -30,6 +31,7 @@ public class SettingActivity extends Activity {
     private Button mPairedBtn;
     private Button mScanBtn;
     private Button mCheckoutBtn;
+    private Button mCheckProductBtn;
 
     private ProgressDialog mProgressDlg;
 
@@ -47,6 +49,7 @@ public class SettingActivity extends Activity {
         mPairedBtn 			= (Button) findViewById(R.id.btn_view_paired);
         mScanBtn 			= (Button) findViewById(R.id.btn_scan);
         mCheckoutBtn 		= (Button) findViewById(R.id.btn_checkout);
+        mCheckProductBtn 	= (Button) findViewById(R.id.product_check_button);
 
         mBluetoothAdapter	= BluetoothAdapter.getDefaultAdapter();
 
@@ -66,6 +69,10 @@ public class SettingActivity extends Activity {
         mCheckoutBtn.setOnClickListener(view -> {
             Intent checkoutIntent = new Intent(this, CheckoutScanActivity.class);
             startActivity(checkoutIntent);
+        });
+        mCheckProductBtn.setOnClickListener(view -> {
+            Intent productCheckIntent = new Intent(this, ProductCheckActivity.class);
+            startActivity(productCheckIntent);
         });
 
         if (mBluetoothAdapter == null) {

@@ -2,82 +2,80 @@ package com.d2i.stockmanagement.screen.checkoutscan;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.d2i.stockmanagement.R;
 import com.rscja.deviceapi.RFIDWithUHFBLE;
 import com.rscja.deviceapi.entity.UHFTAGInfo;
+import com.rscja.deviceapi.DeviceAPI;
+import com.rscja.deviceapi.exception.ConfigurationException;
 import com.rscja.deviceapi.interfaces.ConnectionStatus;
 import com.rscja.deviceapi.interfaces.ConnectionStatusCallback;
-import com.rscja.deviceapi.interfaces.KeyEventCallback;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CheckoutScanActivity extends AppCompatActivity {
-    public RFIDWithUHFBLE uhf = RFIDWithUHFBLE.getInstance();
+    private final RFIDWithUHFBLE uhf = RFIDWithUHFBLE.getInstance();
+    private final Handler handler = new Handler();
+
     boolean isRunning = false;
     boolean isScanning = false;
     boolean isExit = false;
     boolean loopFlag = false;
 
-    ListView listView;
-    ArrayAdapter<String> listAdapter;
+    TextView tvEpc;
+    TextView tvStatus;
 
     BTStatus btStatus = new BTStatus();
+
+    CheckoutScanRepository checkoutScanRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_checkout_scan);
 
         uhf.init(getApplicationContext());
+        uhf.setPower(1);
+        uhf.setBeep(false);
+        checkoutScanRepository = new CheckoutScanRepository();
 
-        listView = findViewById(R.id.list_item);
-        listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        listView.setAdapter(listAdapter);
+        initUI();
 
         SharedPreferences sharedPreferences = getSharedPreferences("bluetooth", Context.MODE_PRIVATE);
         String address = sharedPreferences.getString("bluetooth_address", "");
         uhf.connect(address, btStatus);
 
-        Button startButton = findViewById(R.id.start_button);
-        Button stopButton = findViewById(R.id.start_button);
-
-        startButton.setOnClickListener(view -> {
-            startThread();
-        });
-
-        stopButton.setOnClickListener(view -> {
-            isRunning = false;
-            isScanning = false;
-            isExit = false;
-            loopFlag = false;
-        });
-
-        uhf.startInventoryTag();
-
         uhf.setKeyEventCallback(keycode -> {
-            Log.d("TEST", "  keycode =" + keycode + "   ,isExit=" + isExit);
             if (!isExit && uhf.getConnectStatus() == ConnectionStatus.CONNECTED) {
-                if (loopFlag) {
-                    stopInventory();
-                } else {
-                    startThread();
-                }
+                isScanning = true;
+                startThread();
             }
         });
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void initUI() {
+        tvEpc = findViewById(R.id.epc);
+        tvStatus = findViewById(R.id.status);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     public void startThread() {
@@ -85,37 +83,31 @@ public class CheckoutScanActivity extends AppCompatActivity {
             return;
         }
         isRunning = true;
-//        cbFilter.setChecked(false);
         new TagThread().start();
     }
 
     class TagThread extends Thread {
         public void run() {
-            if (uhf.startInventoryTag()) {
-                loopFlag = true;
-                isScanning = true;
-                //success
-            } else {
-                //fail
-            }
-
+            Log.d("TEST", "Thread Running");
             isRunning = false;
 
-            while (loopFlag) {
-                List<UHFTAGInfo> list = getUHFInfo();
+            if (uhf.startInventoryTag()) {
+                isScanning = true;
+            }
 
-                if (list == null || list.size() == 0) {
-                    SystemClock.sleep(1);
-                } else {
-                    ArrayList<String> epc = new ArrayList<>();
+            List<UHFTAGInfo> list = uhf.readTagFromBufferList();
 
-                    for (UHFTAGInfo info: list) {
-                        uhf.setBeep(true);
-                        epc.add(info.getEPC());
-                    }
+            if (!isScanning && list.size() == 0) {
+                Log.d("TEST", "Do if tag not found");
+                SystemClock.sleep(1);
+            } else {
+                uhf.stopInventory();
+                if (list.get(0) != null) {
+                    handler.post(() -> tvEpc.setText(list.get(0).getEPC()));
+                    checkoutScanRepository.postUID(list.get(0).getEPC());
                 }
             }
-            stopInventory();
+            isScanning = false;
         }
     }
 
@@ -123,7 +115,7 @@ public class CheckoutScanActivity extends AppCompatActivity {
         loopFlag = false;
 //        cancelInventoryTask();
         boolean result = uhf.stopInventory();
-        if(isScanning) {
+        if (isScanning) {
             ConnectionStatus connectionStatus = uhf.getConnectStatus();
 
             if (result || connectionStatus == ConnectionStatus.DISCONNECTED) {
@@ -137,20 +129,15 @@ public class CheckoutScanActivity extends AppCompatActivity {
         }
     }
 
-    private synchronized List<UHFTAGInfo> getUHFInfo() {
-        List<UHFTAGInfo> list = uhf.readTagFromBufferList();
-        return list;
-    }
-
     class BTStatus implements ConnectionStatusCallback<Object> {
         @Override
         public void getStatus(final ConnectionStatus connectionStatus, final Object device1) {
             runOnUiThread(() -> {
                 BluetoothDevice device = (BluetoothDevice) device1;
                 if (connectionStatus == ConnectionStatus.CONNECTED) {
-                    Log.i("TEST", "CONNECTED");
+                    handler.post(() -> tvStatus.setText("Device: Connected"));
                 } else if (connectionStatus == ConnectionStatus.DISCONNECTED) {
-                    Log.i("TEST", "DISCONNECTED");
+                    handler.post(() -> tvStatus.setText("Device: Disconnected"));
                 }
             });
         }

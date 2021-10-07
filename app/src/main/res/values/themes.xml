@@ -17,6 +17,17 @@
         <item name="backgroundColor">@color/black</item>
     </style>
 
+    <style name="Theme.StockManagement.TopBar">
+        <item name="android:padding">10dp</item>
+        <item name="android:background">#F8F8F9</item>
+    </style>
+
+    <style name="Theme.StockManagement.TopBar.Title">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#000</item>
+    </style>
+
     <style name="Theme.StockManagement.Label">
         <item name="android:textStyle">bold</item>
     </style>
