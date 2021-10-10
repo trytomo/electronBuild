@@ -1,4 +1,4 @@
-package com.d2i.stockmanagement;
+package com.d2i.stockmanagement.screen.setting;
 
 import java.util.List;
 
@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.d2i.stockmanagement.R;
 
 /**
  * Device list adapter.

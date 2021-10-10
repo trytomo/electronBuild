@@ -27,4 +27,12 @@
     <string name="rfid">RFID</string>
     <string name="product_name">Nama Produk</string>
     <string name="status">Status</string>
+    <string name="menu">Menu</string>
+    <string name="menu_subtitle">Pilih fitur yang ingin anda gunakan</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="checkout">Checkout</string>
+    <string name="check_product">Cek Produk</string>
+    <string name="catalog_product">Katalog Produk</string>
+    <string name="repair">Perbaikan</string>
+    <string name="settings">Pengaturan</string>
 </resources>

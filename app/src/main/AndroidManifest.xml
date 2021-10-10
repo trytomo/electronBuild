@@ -18,9 +18,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StockManagement">
         <activity
+            android:name=".screen.menu.MenuActivity"
+            android:exported="true"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".screen.productcheck.ProductCheckActivity"
             android:exported="true"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".screen.login.LoginActivity"
             android:exported="true" />
@@ -29,14 +39,8 @@
             android:exported="true"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".SettingActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:name=".screen.setting.SettingActivity"
+            android:exported="true" />
         <activity
             android:name=".DeviceListActivity"
             android:exported="true" />

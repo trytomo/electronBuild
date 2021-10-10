@@ -13,12 +13,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.rscja.deviceapi.interfaces.ConnectionStatus;
-import com.rscja.deviceapi.interfaces.ConnectionStatusCallback;
+import com.d2i.stockmanagement.screen.setting.DeviceListAdapter;
 
 public class DeviceListActivity extends Activity {
     private ListView mListView;

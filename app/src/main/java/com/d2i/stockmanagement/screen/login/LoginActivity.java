@@ -6,7 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.Toast;
 
-import com.d2i.stockmanagement.BaseActivity;
+import com.d2i.stockmanagement.screen.BaseActivity;
 import com.d2i.stockmanagement.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;

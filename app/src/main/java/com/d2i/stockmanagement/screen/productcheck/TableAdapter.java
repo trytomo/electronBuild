@@ -1,5 +1,6 @@
 package com.d2i.stockmanagement.screen.productcheck;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,15 +32,24 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.getNo().setText(inventoryTags.get(position).getNo());
-        holder.getRfid().setText(inventoryTags.get(position).getRfid());
-        holder.getProductName().setText(inventoryTags.get(position).getProductName());
-        holder.getStatus().setText(inventoryTags.get(position).getStatus());
+        String no = String.valueOf(inventoryTags.get(position).getNo());
+        holder.no.setText(no);
+
+        holder.rfid.setText(inventoryTags.get(position).getRfid());
+        holder.productName.setText(inventoryTags.get(position).getProductName());
+        holder.status.setText(inventoryTags.get(position).getStatus());
     }
 
     @Override
     public int getItemCount() {
         return inventoryTags.size();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setInventoryTags(ArrayList<InventoryTag> data) {
+        inventoryTags.clear();
+        inventoryTags.addAll(data);
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

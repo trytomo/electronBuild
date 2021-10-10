@@ -1,4 +1,4 @@
-package com.d2i.stockmanagement;
+package com.d2i.stockmanagement.screen.setting;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -22,6 +22,8 @@ import android.widget.Toast;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 
+import com.d2i.stockmanagement.DeviceListActivity;
+import com.d2i.stockmanagement.R;
 import com.d2i.stockmanagement.screen.checkoutscan.CheckoutScanActivity;
 import com.d2i.stockmanagement.screen.productcheck.ProductCheckActivity;
 
