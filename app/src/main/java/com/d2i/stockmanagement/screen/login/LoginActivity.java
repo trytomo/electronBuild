@@ -4,14 +4,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.d2i.stockmanagement.entity.ServerResponse;
+import com.d2i.stockmanagement.entity.LoginRequest;
+import com.d2i.stockmanagement.repository.AuthRepository;
 import com.d2i.stockmanagement.screen.BaseActivity;
 import com.d2i.stockmanagement.R;
+import com.d2i.stockmanagement.screen.menu.MenuActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.json.JSONException;
+import java.io.IOException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends BaseActivity {
     MaterialButton signInButton;
@@ -29,7 +38,7 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        authRepository = new AuthRepository();
+        authRepository = new AuthRepository(getBaseContext());
 
         initUI();
     }
@@ -83,15 +92,11 @@ public class LoginActivity extends BaseActivity {
     };
 
     private void onSignInButtonClicked() {
-        try {
-            boolean success = authRepository.login(usernameValue, passwordValue);
-            if (success) {
-                Intent menuIntent = new Intent(this, null);
-                startActivity(menuIntent);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//        LoginRequest loginRequest = new LoginRequest(usernameValue, passwordValue);
+//        authRepository.login(loginRequest);
+        Intent intent = new Intent(getBaseContext(), MenuActivity.class);
+        startActivity(intent);
+
     }
 
     private void onForgetButtonClicked() {

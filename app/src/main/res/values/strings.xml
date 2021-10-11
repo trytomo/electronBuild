@@ -1,4 +1,5 @@
 <resources>
+    <string name="api_url">https://api.singgalanghs.id/api/</string>
     <string name="app_name">Stock Management</string>
     <string name="text_pair">Pair</string>
     <string name="text_list_devices">List Device</string>
