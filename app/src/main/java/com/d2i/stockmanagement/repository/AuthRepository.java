@@ -50,7 +50,7 @@ public class AuthRepository {
 
     public void login(LoginRequest loginRequest) {
 //        String url = "https://api.singgalanghs.id/";
-        String url = "https://cfe0-114-142-173-38.ngrok.io/";
+        String url = "https://5020-182-253-194-43.ngrok.io/";
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -72,7 +72,10 @@ public class AuthRepository {
 
             @Override
             public void onResponse(Call<ServerResponse<LoginResponse>> call, Response<ServerResponse<LoginResponse>> response) {
-                Log.d("Login", response.body().getData().getToken());
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("Login", response.body().toString());
+                }
+
             }
 
             @Override

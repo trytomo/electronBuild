@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +15,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.d2i.stockmanagement.R;
 import com.d2i.stockmanagement.entity.InventoryTag;
@@ -60,10 +63,12 @@ public class ProductCheckActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
+
         if (uhf.getConnectStatus() == ConnectionStatus.DISCONNECTED) {
-            String address = bluetoothHelper.getAddress();
+            SharedPreferences sharedPreferences = getSharedPreferences("bluetooth", Context.MODE_PRIVATE);
+            String address = sharedPreferences.getString("bluetooth_address", "");
             uhf.connect(address, btStatus);
         }
     }
@@ -141,7 +146,7 @@ public class ProductCheckActivity extends AppCompatActivity {
                 } else {
                     handler.post(() -> {
                         scannedProducts.addAll(list);
-                        tableAdapterScanned.notifyDataSetChanged();
+//                        tableAdapterScanned.notifyDataSetChanged();
                     });
                 }
 
