@@ -7,28 +7,25 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.d2i.stockmanagement.entity.LoginResponse;
-import com.d2i.stockmanagement.entity.ServerResponse;
-import com.d2i.stockmanagement.entity.LoginRequest;
+import com.d2i.stockmanagement.entity.response.LoginResponse;
+import com.d2i.stockmanagement.entity.response.ServerResponse;
+import com.d2i.stockmanagement.entity.request.LoginRequest;
 import com.d2i.stockmanagement.screen.BaseActivity;
 import com.d2i.stockmanagement.R;
 import com.d2i.stockmanagement.screen.menu.MenuActivity;
 import com.d2i.stockmanagement.service.AuthService;
+import com.d2i.stockmanagement.utils.ApiHelper;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends BaseActivity {
     MaterialButton signInButton;
@@ -96,22 +93,9 @@ public class LoginActivity extends BaseActivity {
     };
 
     private void onSignInButtonClicked() {
-        String url = "https://api.singgalanghs.id/";
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.addInterceptor(logging);
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .client(httpClient.build())
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(url)
-                .build();
-
+        ApiHelper apiHelper = new ApiHelper(this);
+        Retrofit retrofit = apiHelper.getRetrofit();
         AuthService service = retrofit.create(AuthService.class);
-
         LoginRequest loginRequest = new LoginRequest(usernameValue, passwordValue);
         Call<ServerResponse<LoginResponse>> call = service.login(loginRequest);
 
@@ -133,7 +117,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onFailure(@NonNull Call<ServerResponse<LoginResponse>> call, @NonNull Throwable t) {
                 t.printStackTrace();
-                Log.d("Login", t.getMessage());
+                Toast.makeText(getBaseContext(), "Login Failed", Toast.LENGTH_LONG).show();
             }
         });
     }

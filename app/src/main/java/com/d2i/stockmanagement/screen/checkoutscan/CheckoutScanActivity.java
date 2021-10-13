@@ -16,8 +16,6 @@ import android.widget.TextView;
 import com.d2i.stockmanagement.R;
 import com.rscja.deviceapi.RFIDWithUHFBLE;
 import com.rscja.deviceapi.entity.UHFTAGInfo;
-import com.rscja.deviceapi.DeviceAPI;
-import com.rscja.deviceapi.exception.ConfigurationException;
 import com.rscja.deviceapi.interfaces.ConnectionStatus;
 import com.rscja.deviceapi.interfaces.ConnectionStatusCallback;
 
@@ -36,8 +34,6 @@ public class CheckoutScanActivity extends AppCompatActivity {
 
     BTStatus btStatus = new BTStatus();
 
-    CheckoutScanRepository checkoutScanRepository;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +44,6 @@ public class CheckoutScanActivity extends AppCompatActivity {
 
         uhf.init(getApplicationContext());
         uhf.setBeep(true);
-        checkoutScanRepository = new CheckoutScanRepository();
 
         initUI();
 
@@ -109,6 +104,7 @@ public class CheckoutScanActivity extends AppCompatActivity {
     }
 
     class BTStatus implements ConnectionStatusCallback<Object> {
+        @SuppressLint("SetTextI18n")
         @Override
         public void getStatus(final ConnectionStatus connectionStatus, final Object device1) {
             runOnUiThread(() -> {

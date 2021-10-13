@@ -1,4 +1,4 @@
-package com.d2i.stockmanagement.entity;
+package com.d2i.stockmanagement.entity.response;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -1,4 +1,4 @@
-package com.d2i.stockmanagement.entity;
+package com.d2i.stockmanagement.entity.request;
 
 public class LoginRequest {
     private String email;

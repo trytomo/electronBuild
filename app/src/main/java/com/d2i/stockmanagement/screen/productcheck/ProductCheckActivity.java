@@ -1,5 +1,6 @@
 package com.d2i.stockmanagement.screen.productcheck;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,13 +16,13 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.d2i.stockmanagement.R;
 import com.d2i.stockmanagement.entity.EPC;
 import com.d2i.stockmanagement.entity.InventoryTag;
 import com.d2i.stockmanagement.entity.request.TagCreateRequest;
-import com.d2i.stockmanagement.repository.ProductCheckRepository;
+import com.d2i.stockmanagement.service.ProductCheckService;
+import com.d2i.stockmanagement.utils.ApiHelper;
 import com.d2i.stockmanagement.utils.BluetoothHelper;
 import com.rscja.deviceapi.RFIDWithUHFBLE;
 import com.rscja.deviceapi.entity.UHFTAGInfo;
@@ -32,19 +33,20 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class ProductCheckActivity extends AppCompatActivity {
-    private final String TAG = "ProductCheckActivity";
-
     RecyclerView rvScannedProduct;
     BluetoothHelper bluetoothHelper;
     TextView tvStatus;
     TableAdapter tableAdapterScanned;
     TableAdapter tableAdapterServer;
 
-//    Set<UHFTAGInfo> scannedProducts = new LinkedHashSet<>();
     ArrayList<UHFTAGInfo> scannedProducts = new ArrayList<>();
     private final RFIDWithUHFBLE uhf = RFIDWithUHFBLE.getInstance();
     private final Handler handler = new Handler();
@@ -140,8 +142,7 @@ public class ProductCheckActivity extends AppCompatActivity {
             epcs.add(epc);
         }
 
-        ProductCheckRepository repository = new ProductCheckRepository(this);
-        repository.createMany(epcs);
+        bulkInsertToDatabase(epcs);
     }
 
 
@@ -162,6 +163,7 @@ public class ProductCheckActivity extends AppCompatActivity {
     }
 
     class BTStatus implements ConnectionStatusCallback<Object> {
+        @SuppressLint("SetTextI18n")
         @Override
         public void getStatus(final ConnectionStatus connectionStatus, final Object device1) {
             runOnUiThread(() -> {
@@ -193,9 +195,29 @@ public class ProductCheckActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        uhf.disconnect();
+    private void bulkInsertToDatabase(ArrayList<EPC> epcs) {
+        ApiHelper apiHelper = new ApiHelper(this);
+        apiHelper.setBaseUrl("https://singgalang-adonis.herokuapp.com/");
+
+        Retrofit retrofit = apiHelper.getRetrofit();
+        ProductCheckService service = retrofit.create(ProductCheckService.class);
+
+        TagCreateRequest request = new TagCreateRequest();
+        request.setData(epcs);
+
+        Call<Void> call = service.post(request);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("EPC Tag", "Success to insert into Database");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                Log.d("EPC Tag", "Failed to insert into Database");
+            }
+        });
     }
 }
