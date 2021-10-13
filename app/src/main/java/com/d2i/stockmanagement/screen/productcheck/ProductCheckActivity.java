@@ -18,7 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.d2i.stockmanagement.R;
+import com.d2i.stockmanagement.entity.EPC;
 import com.d2i.stockmanagement.entity.InventoryTag;
+import com.d2i.stockmanagement.entity.request.TagCreateRequest;
+import com.d2i.stockmanagement.repository.ProductCheckRepository;
 import com.d2i.stockmanagement.utils.BluetoothHelper;
 import com.rscja.deviceapi.RFIDWithUHFBLE;
 import com.rscja.deviceapi.entity.UHFTAGInfo;
@@ -41,7 +44,8 @@ public class ProductCheckActivity extends AppCompatActivity {
     TableAdapter tableAdapterScanned;
     TableAdapter tableAdapterServer;
 
-    private final Set<UHFTAGInfo> scannedProducts = new LinkedHashSet<>();
+//    Set<UHFTAGInfo> scannedProducts = new LinkedHashSet<>();
+    ArrayList<UHFTAGInfo> scannedProducts = new ArrayList<>();
     private final RFIDWithUHFBLE uhf = RFIDWithUHFBLE.getInstance();
     private final Handler handler = new Handler();
     private final BTStatus btStatus = new BTStatus();
@@ -78,6 +82,7 @@ public class ProductCheckActivity extends AppCompatActivity {
         tvStatus = findViewById(R.id.status);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void initUHF() {
         String address = bluetoothHelper.getAddress();
 
@@ -86,13 +91,59 @@ public class ProductCheckActivity extends AppCompatActivity {
         uhf.setKeyEventCallback(keyCode -> {
             if (uhf.getConnectStatus() == ConnectionStatus.CONNECTED) {
                 if (loopFlag) {
+                    loopFlag = false;
                     uhf.stopInventory();
+                    checkProducts();
                 } else {
                     new TagThread().start();
                 }
             }
         });
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void checkProducts() {
+        ArrayList<String> result = new ArrayList<>();
+
+        for (UHFTAGInfo info: scannedProducts) {
+            result.add(info.getEPC());
+        }
+
+        insertIntoDatabase(result);
+
+        LinkedHashSet<String> epcs = new LinkedHashSet<>(result);
+
+        ArrayList<InventoryTag> tags = new ArrayList<>();
+
+        int index = 1;
+        for (String epc : epcs) {
+            InventoryTag tag = new InventoryTag();
+            tag.setNo(index);
+            tag.setProductName(epc);
+            tag.setRfid("2");
+            tag.setStatus("5");
+            tags.add(tag);
+            index++;
+        }
+
+//        ArrayList<InventoryTag> tag = new ArrayList<>(tags);
+        tableAdapterScanned.setInventoryTags(tags);
+        tableAdapterScanned.notifyDataSetChanged();
+    }
+
+    private void insertIntoDatabase(ArrayList<String> data)
+    {
+        ArrayList<EPC> epcs = new ArrayList<>();
+        for(String item : data) {
+            EPC epc = new EPC();
+            epc.setDataEpc(item);
+            epcs.add(epc);
+        }
+
+        ProductCheckRepository repository = new ProductCheckRepository(this);
+        repository.createMany(epcs);
+    }
+
 
     private void initScannedProduct() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -124,36 +175,18 @@ public class ProductCheckActivity extends AppCompatActivity {
     }
 
     class TagThread extends Thread {
-        @SuppressLint("NotifyDataSetChanged")
         public void run() {
             if (uhf.startInventoryTag()) {
                 loopFlag = true;
-                handler.post(() -> {
-                    Log.d(TAG, "Inventory tag successfully started");
-                });
-            } else {
-                handler.post(() -> {
-                    Log.d(TAG, "Failed to start inventory tag");
-                });
             }
 
-            long startTime = System.currentTimeMillis();
             while (loopFlag) {
                 List<UHFTAGInfo> list = getUHFInfo();
 
                 if (list == null || list.size() == 0) {
                     SystemClock.sleep(1);
                 } else {
-                    handler.post(() -> {
-                        scannedProducts.addAll(list);
-//                        tableAdapterScanned.notifyDataSetChanged();
-                    });
-                }
-
-                if (System.currentTimeMillis() - startTime > 100) {
-                    handler.post(() -> {
-                        Log.i(TAG, "Nothing happened");
-                    });
+                    handler.post(() -> scannedProducts.addAll(list));
                 }
             }
             stopInventory();

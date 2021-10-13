@@ -13,6 +13,7 @@ import com.d2i.stockmanagement.R;
 import com.d2i.stockmanagement.entity.InventoryTag;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> {
     private final ArrayList<InventoryTag> inventoryTags;

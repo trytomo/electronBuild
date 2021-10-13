@@ -7,16 +7,20 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.d2i.stockmanagement.entity.EPC;
 import com.d2i.stockmanagement.entity.ServerResponse;
 import com.d2i.stockmanagement.entity.LoginRequest;
+import com.d2i.stockmanagement.entity.request.TagCreateRequest;
 import com.d2i.stockmanagement.repository.AuthRepository;
 import com.d2i.stockmanagement.screen.BaseActivity;
 import com.d2i.stockmanagement.R;
 import com.d2i.stockmanagement.screen.menu.MenuActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -96,7 +100,6 @@ public class LoginActivity extends BaseActivity {
 //        authRepository.login(loginRequest);
         Intent intent = new Intent(getBaseContext(), MenuActivity.class);
         startActivity(intent);
-
     }
 
     private void onForgetButtonClicked() {

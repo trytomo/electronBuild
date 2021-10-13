@@ -2,28 +2,34 @@ package com.d2i.stockmanagement.screen.checkoutscan;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.d2i.stockmanagement.R;
 import com.rscja.deviceapi.RFIDWithUHFBLE;
 import com.rscja.deviceapi.entity.UHFTAGInfo;
+import com.rscja.deviceapi.DeviceAPI;
+import com.rscja.deviceapi.exception.ConfigurationException;
 import com.rscja.deviceapi.interfaces.ConnectionStatus;
 import com.rscja.deviceapi.interfaces.ConnectionStatusCallback;
 
+import java.util.List;
 import java.util.Objects;
 
 public class CheckoutScanActivity extends AppCompatActivity {
     private final RFIDWithUHFBLE uhf = RFIDWithUHFBLE.getInstance();
     private final Handler handler = new Handler();
 
-    private boolean isStarted = false;
+    boolean isRunning = false;
+    boolean isScanning = false;
 
     TextView tvEpc;
     TextView tvStatus;
@@ -48,21 +54,17 @@ public class CheckoutScanActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("bluetooth", Context.MODE_PRIVATE);
         String address = sharedPreferences.getString("bluetooth_address", "");
-
-        if (uhf.getConnectStatus() == ConnectionStatus.DISCONNECTED) {
-            Toast.makeText(getBaseContext(), "Bluetooth address: " + address, Toast.LENGTH_SHORT).show();
-            uhf.connect(address, btStatus);
-        } else {
-            Toast.makeText(getBaseContext(), "UHF Belum connect bluetooth", Toast.LENGTH_SHORT).show();
-        }
+        uhf.connect(address, btStatus);
 
         uhf.setKeyEventCallback(keycode -> {
             if (uhf.getConnectStatus() == ConnectionStatus.CONNECTED) {
+                isScanning = true;
                 startThread();
             }
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void initUI() {
         tvEpc = findViewById(R.id.epc);
         tvStatus = findViewById(R.id.status);
@@ -73,51 +75,36 @@ public class CheckoutScanActivity extends AppCompatActivity {
         super.onStart();
     }
 
-    private void startThread() {
-        if (isStarted) {
-            Toast.makeText(getBaseContext(),"Thread Already running", Toast.LENGTH_SHORT).show();
+    public void startThread() {
+        if (isRunning) {
             return;
         }
-
-        Toast.makeText(getBaseContext(),"Thread starting", Toast.LENGTH_SHORT).show();
-        isStarted = true;
+        isRunning = true;
         new TagThread().start();
     }
 
-
     class TagThread extends Thread {
         public void run() {
-            handler.post(() -> {
-                Toast.makeText(CheckoutScanActivity.this, "Thread Started", Toast.LENGTH_SHORT).show();
-            });
+            Log.d("TEST", "Thread Running");
+            isRunning = false;
 
             if (uhf.startInventoryTag()) {
-                handler.post(() -> {
-                    Toast.makeText(CheckoutScanActivity.this, "UHF Started", Toast.LENGTH_SHORT).show();
-                    isStarted = false;
-                });
-                try {
-                    UHFTAGInfo info = uhf.inventorySingleTag();
-
-                    if (info != null) {
-                        Toast.makeText(CheckoutScanActivity.this, info.getEPC(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(CheckoutScanActivity.this, "UHF Belum terbaca", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (Exception e) {
-                    Toast.makeText(CheckoutScanActivity.this, "Gagal Membaca UHF", Toast.LENGTH_SHORT).show();
-                }
-
-
-                if(uhf.stopInventory()) {
-                    Toast.makeText(CheckoutScanActivity.this, "UHF Stopped", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                handler.post(() -> {
-                    Toast.makeText(CheckoutScanActivity.this, "UHF Failed to start", Toast.LENGTH_SHORT).show();
-                    isStarted = false;
-                });
+                isScanning = true;
             }
+
+            List<UHFTAGInfo> list = uhf.readTagFromBufferList();
+
+            if (!isScanning && list.size() == 0) {
+                Log.d("TEST", "Do if tag not found");
+                SystemClock.sleep(1);
+            } else {
+                uhf.stopInventory();
+                if (list.get(0) != null) {
+                    handler.post(() -> tvEpc.setText(list.get(0).getEPC()));
+//                    checkoutScanRepository.postUID(list.get(0).getEPC());
+                }
+            }
+            isScanning = false;
         }
     }
 
@@ -129,17 +116,9 @@ public class CheckoutScanActivity extends AppCompatActivity {
                 if (connectionStatus == ConnectionStatus.CONNECTED) {
                     handler.post(() -> tvStatus.setText("Device: Connected"));
                 } else if (connectionStatus == ConnectionStatus.DISCONNECTED) {
-                    handler.post(() -> {
-                        tvStatus.setText("Device: Disconnected");
-                    });
+                    handler.post(() -> tvStatus.setText("Device: Disconnected"));
                 }
             });
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        uhf.disconnect();
     }
 }
