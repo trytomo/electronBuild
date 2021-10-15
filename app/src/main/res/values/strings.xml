@@ -36,4 +36,8 @@
     <string name="catalog_product">Katalog Produk</string>
     <string name="repair">Perbaikan</string>
     <string name="settings">Pengaturan</string>
+    <string name="product_sold">Produk Terjual</string>
+    <string name="product_lost">Produk Hilang</string>
+    <string name="diamond_sold">Berlian Terjual</string>
+    <string name="gold_sold">Emas Terjual</string>
 </resources>

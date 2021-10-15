@@ -6,6 +6,7 @@ import android.widget.RelativeLayout;
 
 import com.d2i.stockmanagement.R;
 import com.d2i.stockmanagement.screen.BaseActivity;
+import com.d2i.stockmanagement.screen.dashboard.DashboardActivity;
 import com.d2i.stockmanagement.screen.setting.SettingActivity;
 import com.d2i.stockmanagement.screen.checkoutscan.CheckoutScanActivity;
 import com.d2i.stockmanagement.screen.productcheck.ProductCheckActivity;
@@ -28,6 +29,11 @@ public class MenuActivity extends BaseActivity {
         RelativeLayout rlRepair = findViewById(R.id.repair);
         RelativeLayout rlSettings = findViewById(R.id.settings);
 
+        rlDashboard.setOnClickListener(view -> {
+            Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
+            startActivity(intent);
+        });
+
         rlCheckout.setOnClickListener(view -> {
             Intent intent = new Intent(getBaseContext(), CheckoutScanActivity.class);
             startActivity(intent);
@@ -36,6 +42,14 @@ public class MenuActivity extends BaseActivity {
         rlCheckProduct.setOnClickListener(view -> {
             Intent intent = new Intent(getBaseContext(), ProductCheckActivity.class);
             startActivity(intent);
+        });
+
+        rlCatalogProduct.setOnClickListener(view -> {
+
+        });
+
+        rlRepair.setOnClickListener(view -> {
+
         });
 
         rlSettings.setOnClickListener(view -> {

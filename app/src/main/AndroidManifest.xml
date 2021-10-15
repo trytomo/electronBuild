@@ -17,8 +17,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.StockManagement">
+        android:theme="@style/Theme.StockManagement"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".screen.dashboard.DashboardActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".screen.login.LoginActivity"
             android:exported="true"

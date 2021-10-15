@@ -1,12 +1,10 @@
 package com.d2i.stockmanagement.screen.login;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -93,7 +91,7 @@ public class LoginActivity extends BaseActivity {
     };
 
     private void onSignInButtonClicked() {
-        ApiHelper apiHelper = new ApiHelper(this);
+        ApiHelper apiHelper = new ApiHelper(getApplicationContext());
         Retrofit retrofit = apiHelper.getRetrofit();
         AuthService service = retrofit.create(AuthService.class);
         LoginRequest loginRequest = new LoginRequest(usernameValue, passwordValue);
@@ -104,10 +102,9 @@ public class LoginActivity extends BaseActivity {
             public void onResponse(@NonNull Call<ServerResponse<LoginResponse>> call, @NonNull Response<ServerResponse<LoginResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     String token = response.body().getData().getToken();
+                    Log.d("TOKEN", token);
+                    apiHelper.setAccessToken(token);
                     if (token != null) {
-                        SharedPreferences preferences = getSharedPreferences("authentication", Context.MODE_PRIVATE);
-                        @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString("token", token);
                         Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
                         startActivity(intent);
                     }
